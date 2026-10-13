@@ -1,5 +1,17 @@
 # Titlovi.com unofficial
 
+## Install / Configure
+
+**[▶ Install Titlovi.com unofficial (configure your addon)](https://titlovi-com-unofficial.onrender.com/configure)**
+
+1. Open the configuration page using the link above.
+2. Enter **your own private** official Titlovi.com Stremio manifest URL.
+3. Select the subtitle languages and click **Создај приватен инсталациски линк**.
+4. Copy the generated **configured** `manifest.json` URL and install it in Nuvio Desktop or Stremio.
+
+> **Privacy:** Do not publish the generated `/c/.../manifest.json` link in GitHub or elsewhere. It carries access to your personal Titlovi.com configuration. The public link above only opens the configuration page.
+
+
 Unofficial configurable Stremio/Nuvio subtitle addon. **Not affiliated with Titlovi.com.**
 
 Based on the working local Titlovi.com — 5 јазици v1.6 addon. Provides English, Macedonian, Serbian, Croatian, and Bosnian subtitles via each user's own official Titlovi.com Stremio addon. It preserves upstream `lang` and `label`, supports encoded episode IDs, and uses the upstream `videoID` parameter for series. No AI translation.
