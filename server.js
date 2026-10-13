@@ -33,14 +33,16 @@ function sourceUrl(base,type,id,extra=''){
   const e=params.toString();return `${base}/subtitles/${type}/${encodeURIComponent(id)}${e?'/'+e:''}.json`;
 }
 function safeUrl(s){try{const u=new URL(s);return u.protocol==='https:'&&!u.username&&!u.password&&!u.port;}catch{return false;}}
-function filterSubs(items,langs){const out=[],seen=new Set(),wanted=new Set(langs);for(const s of (Array.isArray(items)?items:[]).slice(0,300)){
+function filterSubs(items,langs){const out=[],seen=new Set(),usedNames=new Set(),wanted=new Set(langs);for(const s of (Array.isArray(items)?items:[]).slice(0,300)){
   if(!s||!safeUrl(s.url)||!wanted.has(normLang(s.lang)))continue;
   const rawLang=String(s.lang).trim();const seed=`${normLang(s.lang)}\0${s.id||''}\0${s.url}`;
   const id='titlovi-unofficial-'+crypto.createHash('sha256').update(seed).digest('hex').slice(0,24);if(seen.has(id))continue;seen.add(id);
   const label=typeof s.label==='string'?s.label.trim().slice(0,240):'';
-  // Nuvio Android TV shows subtitle.id as the release/filename metadata, not subtitle.label.
-  // Keep the original release name (including .cyr/.lat) readable, with a short unique suffix.
-  const displayId=label?`${label} [${id.slice(-8)}]`:id;
+  // Nuvio Android TV displays subtitle.id as filename metadata. Use the clean
+  // original release name, disambiguating only actual duplicate names.
+  const base=label||id;let displayId=base;
+  for(let n=2;usedNames.has(displayId);n++)displayId=`${base} (${n})`;
+  usedNames.add(displayId);
   const row={id:displayId,lang:rawLang,url:s.url};if(label)row.label=label;out.push(row);
 }return out;}
 async function getSubs(cfg,type,id,extra,fetcher=fetch){const base=cfg.url.slice(0,-'/manifest.json'.length).replace(/\/$/,'');const variants=[sourceUrl(base,type,id,extra)];if(type==='series')variants.push(`${base}/subtitles/${type}/${encodeURIComponent(id)}.json`);for(const p of variants){try{const r=await fetcher(p,{headers:{accept:'application/json'},signal:AbortSignal.timeout(12000),redirect:'error'});if(!r.ok)continue;const data=await r.json();if(!Array.isArray(data?.subtitles))continue;const result=filterSubs(data.subtitles,cfg.langs);if(result.length||p===variants.at(-1))return result;}catch(e){console.warn('upstream request failed:',e?.name||'Error');}}return [];}
