@@ -16,8 +16,9 @@ test('Android TV shows release name in id and keeps Serbian script markers',()=>
     {id:'three',lang:'srp',label:'Episode.1080p.WEB-DL.lat',url:'https://example.com/three.srt'}
   ],['srp']);
   assert.equal(subs.length,3);
-  assert.match(subs[0].id,/Episode\.1080p\.WEB-DL\.cyr/);
-  assert.match(subs[1].id,/Episode\.1080p\.WEB-DL\.lat/);
+  assert.equal(subs[0].id,'Episode.1080p.WEB-DL.cyr');
+  assert.equal(subs[1].id,'Episode.1080p.WEB-DL.lat');
+  assert.equal(subs[2].id,'Episode.1080p.WEB-DL.lat (2)');
   assert.equal(subs[0].lang,'srp');
   assert.equal(subs[1].lang,'srp');
   assert.equal(subs[1].label,'Episode.1080p.WEB-DL.lat');
