@@ -37,7 +37,11 @@ function filterSubs(items,langs){const out=[],seen=new Set(),wanted=new Set(lang
   if(!s||!safeUrl(s.url)||!wanted.has(normLang(s.lang)))continue;
   const rawLang=String(s.lang).trim();const seed=`${normLang(s.lang)}\0${s.id||''}\0${s.url}`;
   const id='titlovi-unofficial-'+crypto.createHash('sha256').update(seed).digest('hex').slice(0,24);if(seen.has(id))continue;seen.add(id);
-  const row={id,lang:rawLang,url:s.url};if(typeof s.label==='string'&&s.label.trim())row.label=s.label.slice(0,240);out.push(row);
+  const label=typeof s.label==='string'?s.label.trim().slice(0,240):'';
+  // Nuvio Android TV shows subtitle.id as the release/filename metadata, not subtitle.label.
+  // Keep the original release name (including .cyr/.lat) readable, with a short unique suffix.
+  const displayId=label?`${label} [${id.slice(-8)}]`:id;
+  const row={id:displayId,lang:rawLang,url:s.url};if(label)row.label=label;out.push(row);
 }return out;}
 async function getSubs(cfg,type,id,extra,fetcher=fetch){const base=cfg.url.slice(0,-'/manifest.json'.length).replace(/\/$/,'');const variants=[sourceUrl(base,type,id,extra)];if(type==='series')variants.push(`${base}/subtitles/${type}/${encodeURIComponent(id)}.json`);for(const p of variants){try{const r=await fetcher(p,{headers:{accept:'application/json'},signal:AbortSignal.timeout(12000),redirect:'error'});if(!r.ok)continue;const data=await r.json();if(!Array.isArray(data?.subtitles))continue;const result=filterSubs(data.subtitles,cfg.langs);if(result.length||p===variants.at(-1))return result;}catch(e){console.warn('upstream request failed:',e?.name||'Error');}}return [];}
 function send(res,status,obj,type='application/json; charset=utf-8',headers={}){res.writeHead(status,{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer','access-control-allow-origin':'*',...headers});res.end(typeof obj==='string'?obj:JSON.stringify(obj));}
