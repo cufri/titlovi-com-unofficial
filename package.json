@@ -1,0 +1,9 @@
+{
+  "name": "titlovi-com-unofficial",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Unofficial configurable Stremio and Nuvio subtitle addon, backed by each user's official Titlovi.com addon",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.js", "test": "node --test", "check": "node --check server.js" }
+}
