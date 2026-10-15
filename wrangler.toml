@@ -1,0 +1,8 @@
+name = "titlovi-com-unofficial"
+main = "src.js"
+compatibility_date = "2026-10-15"
+workers_dev = true
+# Optional R2 cache after initial deployment:
+# [[r2_buckets]]
+# binding = "SUBTITLE_CACHE"
+# bucket_name = "titlovi-subtitle-cache"

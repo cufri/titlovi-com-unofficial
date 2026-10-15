@@ -1,9 +1,1 @@
-{
-  "name": "titlovi-com-unofficial",
-  "version": "2.0.0",
-  "private": true,
-  "description": "Unofficial configurable Stremio and Nuvio subtitle addon, backed by each user's official Titlovi.com addon",
-  "license": "MIT",
-  "engines": { "node": ">=20" },
-  "scripts": { "start": "node server.js", "test": "node --test", "check": "node --check server.js" }
-}
+{"name":"titlovi-com-unofficial-cloudflare","version":"2.3.0","private":true,"type":"module","scripts":{"dev":"wrangler dev","deploy":"wrangler deploy","check":"node --check src.js","test":"node --test test.mjs"},"devDependencies":{"wrangler":"^4.0.0"}}
